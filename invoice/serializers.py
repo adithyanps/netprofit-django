@@ -56,13 +56,18 @@ class P_InvoiceSerializer(serializers.ModelSerializer):
         instance.grant_total = validated_data.get('grant_total', instance.grant_total)
 
         instance.save()
+        # musician = P_Invoice.objects.update(**validated_data)
+
+        # for album_data in albums_data:
+            # C_Invoice.objects.update(key=musician, **album_data)
 
         for album_data in albums_data:
-            album = albums.pop(0)
+            album = albums.pop()
             album.item = album_data.get('item', album.item)
             album.price = album_data.get('price', album.price)
             album.quantity = album_data.get('quantity', album.quantity)
             album.sub_total = album_data.get('sub_total', album.sub_total)
-
+        #
             album.save()
+        
         return instance

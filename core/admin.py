@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
 from core import models
+
 from django.utils.translation import gettext as _
 
 
@@ -12,7 +13,7 @@ class UserAdmin(BaseUserAdmin):
     ordering = ['id']
     list_display = ['email', 'name']
     fieldsets = (
-        (None, {'fields':('email', 'password') }),
+        (None, {'fields':('email','password') }),
         (_('Personal Info'), {'fields': ('name',)}),
         (_('Permissions'), {'fields':('is_active','is_staff','is_superuser', 'user_choice')}),
         (_('Important dates'), {'fields':('last_login',)})
@@ -26,3 +27,4 @@ class UserAdmin(BaseUserAdmin):
 admin.site.register(models.User, UserAdmin)
 admin.site.register(models.Customer)
 admin.site.register(models.Branch)
+admin.site.register(models.Item)
