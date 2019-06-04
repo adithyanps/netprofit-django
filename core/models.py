@@ -68,18 +68,74 @@ class Item(models.Model):
     def __str__(self):
         return self.item
 
+# Journal entry
+
+
+class JournalEntry(models.Model):
+    CHOICES = (
+        ('SALES', 'Sales'),
+        ('PURCHASE', 'Purchase'),
+        ('DEBITNOTE', 'DebitNote'),
+        ('CREDITNOTE', 'CreditNote'),
+        ('COSTOMER_RECIEPT', 'CustomerReceipt'),
+        ('SUPPLIER_PAYMENT', 'SupplierPayment'),
+        ('EXPENSE', 'Expense'),
+        ('JOURNAL', 'Journal'),
+    )
+
+    date = models.DateField()
+    transaction_type = models.CharField(max_length=100, choices=CHOICES, default='SALES',null=True, blank=True)
+    description = models.CharField(max_length=15,null=True, blank=True)
+
+    @property
+    def journal_item(self):
+        return self.journalitem_set.all()
+
+
+class Account(models.Model):
+    CHOICES = (
+        ('RECIEVABLE', 'Receivable'),
+        ('PAYABLE', 'Payable'),
+        ('SALES', 'Sales'),
+        ('PURCHASE', 'Purchase'),
+        ('EXPENSE', 'Expense'),
+        ('INCOME', 'Income'),
+        ('CASH', 'Cash'),
+        ('BANK', 'Bank'),
+    )
+
+    type = models.CharField(max_length=15, choices=CHOICES, default='RECIEVABLE',)
+    name = models.CharField(max_length=150)
+
+
+class AccountDefault(models.Model):
+    SalesAccont = models.ForeignKey(Account,on_delete=models.CASCADE,related_name='SalesAcnt',null=True, blank=True)
+    PurchaseAccont = models.ForeignKey(Account,on_delete=models.CASCADE,related_name='PurchaseAcnt',null=True, blank=True)
+    CustomerAccount = models.ForeignKey(Account,on_delete=models.CASCADE,related_name='CustomerAcnt',null=True, blank=True)
+    SupplierAccount = models.ForeignKey(Account,on_delete=models.CASCADE,related_name='SupplierAcnt',null=True, blank=True)
+
+class JournalItem(models.Model):
+    journal_entry = models.ForeignKey('core.JournalEntry', on_delete=models.CASCADE)
+    account = models.ForeignKey(Account, on_delete=models.CASCADE, null=True, blank=True)
+    partner = models.ForeignKey(Customer, on_delete=models.CASCADE, null=True, blank=True)
+    debit_amount = models.DecimalField(max_digits=15,decimal_places=2,null=True, blank=True)
+    credit_amount = models.DecimalField(max_digits=15,decimal_places=2,null=True, blank=True)
+#
+
 class P_Invoice(models.Model):
      """common elements of user data save here"""
      invoice_no = models.IntegerField()
-     doc_no = models.IntegerField()
-     customer = models.CharField(max_length=50,null=False)
+     doc_no = models.IntegerField(null=True,blank=True)
+     customer = models.CharField(max_length=50,null=False,blank=True)
      branch = models.CharField(max_length=50,null=False)
-     status = models.BooleanField(default=False)
-     narration = models.CharField(max_length=500)
+     status = models.BooleanField(default=False, null=True,blank=True)
+     narration = models.CharField(max_length=500, null=True,blank=True)
      date = models.DateField()
      total_amount = models.DecimalField(max_digits=15,decimal_places=2)
-     discount = models.DecimalField(max_digits=15,decimal_places=2)
+     discount = models.DecimalField(max_digits=15,decimal_places=2, null=True,blank=True)
      grant_total = models.DecimalField(max_digits=15,decimal_places=2)
+     journal_entry = models.ForeignKey(JournalEntry, on_delete=models.CASCADE, null=True, blank=True)
+
 
 class C_Invoice(models.Model):
     key = models.ForeignKey(P_Invoice, on_delete=models.CASCADE, related_name='child', null=True, blank=True)
@@ -88,5 +144,66 @@ class C_Invoice(models.Model):
     price = models.DecimalField(max_digits=15,decimal_places=2)
     sub_total = models.DecimalField(max_digits=15,decimal_places=2)
 
-    # def __str__(self):
-    #     return self.item
+
+class Parent(models.Model):
+    invoice_no = models.IntegerField()
+    doc_no = models.IntegerField(null=True,blank=True)
+    customer = models.CharField(max_length=50,null=False,blank=True)
+    branch = models.CharField(max_length=50,null=False)
+    status = models.BooleanField(default=False, null=True,blank=True)
+    narration = models.CharField(max_length=500, null=True,blank=True)
+    date = models.DateField()
+    total_amount = models.DecimalField(max_digits=15,decimal_places=2)
+    discount = models.DecimalField(max_digits=15,decimal_places=2, null=True,blank=True)
+    grant_total = models.DecimalField(max_digits=15,decimal_places=2)
+    journal_entry = models.ForeignKey(JournalEntry, on_delete=models.CASCADE, null=True, blank=True)
+
+
+    def __str__(self):
+        return self.title
+    #
+    @property
+    def child(self):
+        return self.childinvoice_set.all()
+
+
+class ChildInvoice(models.Model):
+    key = models.ForeignKey('core.Parent', on_delete=models.CASCADE)
+    item = models.CharField(max_length=60,null=False)
+    quantity = models.IntegerField(null=False)
+    price = models.DecimalField(max_digits=15,decimal_places=2)
+    sub_total = models.DecimalField(max_digits=15,decimal_places=2)
+
+
+class CustomerReceipt(models.Model):
+    reciept_no = models.IntegerField()
+    journal_entry = models.ForeignKey(JournalEntry, on_delete=models.CASCADE, null=True, blank=True)
+
+
+# reciept
+class JournalItems(models.Model):
+    account = models.ForeignKey(Account, on_delete=models.CASCADE, null=True, blank=True)
+    partner = models.ForeignKey(Customer, on_delete=models.CASCADE, null=True, blank=True)
+    debit_amount = models.DecimalField(max_digits=15,decimal_places=2,null=True, blank=True)
+    credit_amount = models.DecimalField(max_digits=15,decimal_places=2,null=True, blank=True)
+
+class JournalEntries(models.Model):
+    CHOICES = (
+        ('SALES', 'Sales'),
+        ('PURCHASE', 'Purchase'),
+        ('DEBITNOTE', 'DebitNote'),
+        ('CREDITNOTE', 'CreditNote'),
+        ('COSTOMER_RECIEPT', 'CustomerReceipt'),
+        ('SUPPLIER_PAYMENT', 'SupplierPayment'),
+        ('EXPENSE', 'Expense'),
+        ('JOURNAL', 'Journal'),
+    )
+
+    date = models.DateField()
+    transaction_type = models.CharField(max_length=15, choices=CHOICES, default='SALES',null=True, blank=True)
+    description = models.CharField(max_length=15,null=True, blank=True)
+    journal_items = models.ManyToManyField(JournalItems)
+
+
+class CustomerReceipts(models.Model):
+    reciept_no = models.IntegerField()
