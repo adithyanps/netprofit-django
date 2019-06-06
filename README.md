@@ -3,9 +3,10 @@
 Back End - Django
 
 Steps for create a django app on local machine,
+
 	-sudo apt-get install python-pip python-virtualenv python-setuptools python-dev build-essential  python3.6
 
--install virtualenv for run django project
+	-install virtualenv for run django project
 		-sudo pip install virtualenv
 	-create virtualenv 
 		-virtualenv <virtualenv name>
@@ -30,47 +31,46 @@ Steps for create a django app on local machine,
 --------------------------------------------------------------
 Steps for run a github django project on local machine 
 
--Create and activate virtual environment
--install django packages using pip install
--django-cors-headers  2.4.0
--djangorestframework 3.9.0
--drf-writable-nested  0.5.1
--psycopg2  2.7.7
--Django 2.1.3
+	-Create and activate virtual environment
+	-install django packages using pip install
+	-django-cors-headers  2.4.0
+	-djangorestframework 3.9.0
+	-drf-writable-nested  0.5.1
+	-psycopg2  2.7.7
+	-Django 2.1.3
+	-eg :pip install django-cors-headers===2.4.0
 
 
 Clone the project by using git clone command.
 -example
-git clone https://github.com/adithyanps/my_portfolio
-
-	Enter into project folder.
+	git clone https://github.com/adithyanps/netprofit-django
+Enter into project folder.
 		-cd my_portfolio
 ------------------------
 Database setup
 	-goto settings.py on django project
 	-we can see like,
 		
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'netprofit',
-        'USER':'postgres',
-        'PASSWORD':'test123',
-        'HOST':'127.0.0.1',
-        'PORT':'5432'
-
-    }
-}
+	DATABASES = {
+   	 'default': {
+      	  'ENGINE': 'django.db.backends.postgresql',
+        	'NAME': 'netprofit',
+     	  	'USER':'postgres',
+      		'PASSWORD':'test123',
+     	 	'HOST':'127.0.0.1',
+      		'PORT':'5432'
+		 }
+	}
 
 -first we need to create a database with same name in settings.py.
 
-We need to migrate all models in the project.
--python manage.py makemigrations
--python manage.py migrate
-Create a super user by,
-	-python manage.py createsuperuser
-Run django app by,
-	-python manage.py runserver
+	We need to migrate all models in the project.
+			-python manage.py makemigrations
+			-python manage.py migrate
+	Create a super user by,
+		-python manage.py createsuperuser
+	Run django app by,
+		-python manage.py runserver
 
 Successfully completed django app !!!
 
