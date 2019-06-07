@@ -4,8 +4,7 @@ from core.models import (
         JournalEntry,Account,JournalItem,
         ChildInvoice,Parent,
         AccountDefault,CustomerReceipt,
-        JournalItems,JournalEntries,
-        CustomerReceipts
+        ExpenseCategory,Expenses,
         )
 from rest_framework.validators import UniqueTogetherValidator
 from drf_writable_nested import WritableNestedModelSerializer
@@ -221,7 +220,6 @@ class JournalEntrySerializer(serializers.ModelSerializer):
         instance.date = validated_data.get('date', instance.date)
         instance.transaction_type = validated_data.get('transaction_type', instance.transaction_type)
         instance.description = validated_data.get('description', instance.description)
-
         instance.save()
         keep_choices = []
         for choice in journal_item:
@@ -244,6 +242,7 @@ class JournalEntrySerializer(serializers.ModelSerializer):
                 choice.delete()
 
         return instance
+
 
 class AccountDefaultSerializer(serializers.ModelSerializer):
 
@@ -271,28 +270,14 @@ class CustomerReceiptSerializer(WritableNestedModelSerializer):
         fields = "__all__"
 
 
-class JournalItemsSerializer(serializers.ModelSerializer):
+class ExpenseCategorySerializer(serializers.ModelSerializer):
     class Meta:
-        model = JournalItems
-        fields = [
-        'id',
-        'account','partner',
-        'debit_amount','credit_amount'
-        ]
+        model = ExpenseCategory
+        fields = "__all__"
 
 
-class JournalEntriesSerializer(WritableNestedModelSerializer):
-    journal_items = JournalItemsSerializer(many=True)
-
+class ExpenseSerializer(WritableNestedModelSerializer):
+    journal_entry = JournalEntrySerializer()
     class Meta:
-        model = JournalEntries
-        fields = ('id','date','transaction_type','description','journal_items')
-
-
-class CustomerReceiptsSerializer(WritableNestedModelSerializer):
-
-    JournalEntries = JournalEntriesSerializer()
-
-    class Meta:
-        model = CustomerReceipts
-        fields = ("id","reciept_no","JournalEntries",)
+        model = Expenses
+        fields = "__all__"

@@ -8,9 +8,7 @@ from .views import (
             JournalEntryViewset,
             ParentInvoiceViewSet,ChildInvoiceViewset,
             AccountDefaultViewSet,CustomerReceiptViewSet,
-            ReceiptView,
-            # JournalITEMViewset,JournalEntriesviewset,
-            # CustomerReceiptsViewSet
+            ExpenseCategoryViewSet,ExpenseViewSet,
             )
 
 router = DefaultRouter()
@@ -23,22 +21,15 @@ router.register('account', AccountViewset)
 router.register('journalitem', JournalItemViewset)
 router.register('journalentry', JournalEntryViewset)
 router.register('customerReceipt', CustomerReceiptViewSet)
-
-
 router.register('parantdata', ParentInvoiceViewSet)
 router.register('childitem', ChildInvoiceViewset)
 router.register('accountDefault', AccountDefaultViewSet)
-
-# router.register('JournalITEM', JournalITEMViewset)
-# router.register('JournalENTRY', JournalEntriesviewset)
-# router.register('customerRECIEPT', CustomerReceiptsViewSet)
+router.register('expense-category', ExpenseCategoryViewSet)
+router.register('expenses', ExpenseViewSet)
 
 
 app_name = 'invoice'
 urlpatterns = [
     path('',include(router.urls)),
-    # path('parantdata/',Sample.as_view()),
-    # path('ReceiptView/',ReceiptView.as_view()),
-
 
 ]

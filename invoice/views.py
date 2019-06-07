@@ -163,42 +163,21 @@ class AccountDefaultViewSet(viewsets.ModelViewSet):
 class CustomerReceiptViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.CustomerReceiptSerializer
     queryset = models.CustomerReceipt.objects.all()
-    
+
     def get_queryset(self):
         """return objects"""
         return self.queryset.order_by('id')
 
+class ExpenseCategoryViewSet(viewsets.ModelViewSet):
+    serializer_class = serializers.ExpenseCategorySerializer
+    queryset = models.ExpenseCategory.objects.all()
 
-class ReceiptView(APIView):
-    def get(self, request):
-        receipt_id=request.GET.get('id')
-        response_data = {}
-        journal_entry = {}
-        child={}
-        try:
-            receipt=CustomerReceipt.objects.get(reciept_no=receipt_id)
-            response_data["id"]=receipt.id
-            jentry=receipt.journal_entry
-            journal_entry["date"]=str(jentry.date)
-            journal_entry["transaction_type"]=jentry.transaction_type
-            journal_entry["description"]=jentry.description
-            childs=JournalItem.objects.filter(journal_entry=jentry)
-            child=[dict(account=str(c.account.name),partner=str(c.partner),debit_amount=str(c.debit_amount),credit_amount=str(c.credit_amount)) for c in childs]
-            journal_entry["child"]=child
-            response_data["journal_entry"]=journal_entry
-            response_data["receipt_number"]=receipt.reciept_no
-        except:
-            pass
-        return Response(response_data)
+    def get_queryset(self):
+        return self.queryset.order_by('id')
 
-class JournalITEMViewset(viewsets.ModelViewSet):
-    queryset = models.JournalItems.objects.all()
-    serializer_class = serializers.JournalItemsSerializer
+class ExpenseViewSet(viewsets.ModelViewSet):
+    serializer_class = serializers.ExpenseSerializer
+    queryset = models.Expenses.objects.all()
 
-class JournalEntriesviewset(viewsets.ModelViewSet):
-    queryset = models.JournalEntries.objects.all()
-    serializer_class = serializers.JournalEntriesSerializer
-
-class CustomerReceiptsViewSet(viewsets.ModelViewSet):
-    queryset = models.CustomerReceipts.objects.all()
-    serializer_class = serializers.CustomerReceiptsSerializer
+    def get_queryset(self):
+        return self.queryset.order_by('id')

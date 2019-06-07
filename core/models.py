@@ -180,30 +180,15 @@ class CustomerReceipt(models.Model):
     journal_entry = models.ForeignKey(JournalEntry, on_delete=models.CASCADE, null=True, blank=True)
 
 
-# reciept
-class JournalItems(models.Model):
-    account = models.ForeignKey(Account, on_delete=models.CASCADE, null=True, blank=True)
-    partner = models.ForeignKey(Customer, on_delete=models.CASCADE, null=True, blank=True)
-    debit_amount = models.DecimalField(max_digits=15,decimal_places=2,null=True, blank=True)
-    credit_amount = models.DecimalField(max_digits=15,decimal_places=2,null=True, blank=True)
+# expense
+class ExpenseCategory(models.Model):
+    name = models.CharField(max_length=60,null=False)
 
-class JournalEntries(models.Model):
-    CHOICES = (
-        ('SALES', 'Sales'),
-        ('PURCHASE', 'Purchase'),
-        ('DEBITNOTE', 'DebitNote'),
-        ('CREDITNOTE', 'CreditNote'),
-        ('COSTOMER_RECIEPT', 'CustomerReceipt'),
-        ('SUPPLIER_PAYMENT', 'SupplierPayment'),
-        ('EXPENSE', 'Expense'),
-        ('JOURNAL', 'Journal'),
-    )
-
-    date = models.DateField()
-    transaction_type = models.CharField(max_length=15, choices=CHOICES, default='SALES',null=True, blank=True)
-    description = models.CharField(max_length=15,null=True, blank=True)
-    journal_items = models.ManyToManyField(JournalItems)
-
-
-class CustomerReceipts(models.Model):
-    reciept_no = models.IntegerField()
+class Expenses(models.Model):
+    Doc_no = models.IntegerField()
+    ExpenseCategory = models.ForeignKey(ExpenseCategory, on_delete=models.CASCADE, null=False, blank=False)
+    Date = models.DateField()
+    ExpenseAcct = models.ForeignKey(Account, on_delete=models.CASCADE, null=False, blank=False)
+    CreditAcct = models.ForeignKey(Account,related_name='CreditAcct', on_delete=models.CASCADE, null=False, blank=False)
+    Amount = models.DecimalField(max_digits=15,decimal_places=2)
+    journal_entry = models.ForeignKey(JournalEntry, on_delete=models.CASCADE, null=True, blank=True)
