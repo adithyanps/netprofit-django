@@ -1,10 +1,12 @@
 from rest_framework import serializers,fields
 from core.models import (
-        Customer,Branch,Item,C_Invoice,P_Invoice,
+        Customer,Branch,Item,
         JournalEntry,Account,JournalItem,
         ChildInvoice,Parent,
+        SalesInvoice,
         AccountDefault,CustomerReceipt,
         ExpenseCategory,Expenses,
+        InvoiceLine
         )
 from rest_framework.validators import UniqueTogetherValidator
 from drf_writable_nested import WritableNestedModelSerializer
@@ -26,73 +28,6 @@ class ItemsSerializer(serializers.ModelSerializer):
         model = Item
         fields = ['id','item','price']
 
-class C_InvoiceSerializer(serializers.ModelSerializer):
-    """child data of P_InvoiceSerializer"""
-    class Meta:
-        model = C_Invoice
-        fields = ('id','key','item','price','quantity','sub_total')
-        # read_only_fields = ('key',)
-
-class P_InvoiceSerializer(serializers.ModelSerializer):
-    child = C_InvoiceSerializer(many=True)
-    class Meta:
-        model = P_Invoice
-        fields = (
-            'id', 'invoice_no', 'doc_no',
-            'customer', 'branch', 'status',
-            'narration', 'date', 'total_amount',
-            'discount', 'grant_total',
-            'journal_entry', 'child'
-            )
-        # lookup_field = 'id'
-        # extra_kwargs = {'url': {'lookup_field': 'id'}}
-        # depth = 1
-    def create(self, validated_data):
-        journal_entry_instance = JournalEntry.objects.create(date=validated_data['date'],
-                                                             description="description")
-       #'transaction_type' will be "SALES" by default
-        # account_instance = Account.objects.create(name="some name")
-        account_instance = Account.objects.get(pk=1)
-
-        journal_item_instnce = JournalItem.objects.create(journal_entry=journal_entry_instance,
-                                                          account=account_instance,
-                                                          debit_amount=validated_data['total_amount'],
-                                                          credit_amount=validated_data['total_amount'])
-        child_data = validated_data.pop('child', [])
-        p_invoice_instance = P_Invoice.objects.create(journal_entry=journal_entry_instance, **validated_data)
-        for child in child_data:
-            C_Invoice.objects.create(key=p_invoice_instance, **child)
-        return p_invoice_instance
-
-    def update(self, instance, validated_data):
-        albums_data = validated_data.pop('child')
-        albums = (instance.child).all()
-        albums = list(albums)
-        instance.invoice_no = validated_data.get('invoice_no', instance.invoice_no)
-        instance.doc_no = validated_data.get('doc_no', instance.doc_no)
-        instance.customer = validated_data.get('customer', instance.customer)
-        instance.branch = validated_data.get('branch', instance.branch)
-        instance.status = validated_data.get('status', instance.status)
-        instance.narration = validated_data.get('narration', instance.narration)
-        instance.date = validated_data.get('date', instance.date)
-        instance.total_amount = validated_data.get('total_amount', instance.total_amount)
-        instance.discount = validated_data.get('discount', instance.discount)
-        instance.grant_total = validated_data.get('grant_total', instance.grant_total)
-
-        instance.save()
-
-        for album_data in albums_data:
-            album = albums.pop()
-            album.item = album_data.get('item', album.item)
-            album.price = album_data.get('price', album.price)
-            album.quantity = album_data.get('quantity', album.quantity)
-            album.sub_total = album_data.get('sub_total', album.sub_total)
-            album.save()
-
-        return instance
-
-
-
 class ChildInvoiceSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False)
 
@@ -105,6 +40,11 @@ class ChildInvoiceSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ('key',)
         # depth = 1
+
+class InvoiceLineSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = InvoiceLine
+        fields = "__all__"
 
 
 class ParentInvoiceSerializer(serializers.ModelSerializer):
@@ -179,8 +119,6 @@ class ParentInvoiceSerializer(serializers.ModelSerializer):
                 choice.delete()
 
         return instance
-
-
 class AccountSerializer(serializers.ModelSerializer):
     class Meta:
         model = Account
@@ -280,4 +218,12 @@ class ExpenseSerializer(WritableNestedModelSerializer):
     journal_entry = JournalEntrySerializer()
     class Meta:
         model = Expenses
+        fields = "__all__"
+
+class ParantInvoiceSerializerTest(WritableNestedModelSerializer):
+    journal_entry = JournalEntrySerializer()
+    child = InvoiceLineSerializer(many=True)
+
+    class Meta:
+        model = SalesInvoice
         fields = "__all__"

@@ -122,28 +122,6 @@ class JournalItem(models.Model):
     credit_amount = models.DecimalField(max_digits=15,decimal_places=2,null=True, blank=True)
 #
 
-class P_Invoice(models.Model):
-     """common elements of user data save here"""
-     invoice_no = models.IntegerField()
-     doc_no = models.IntegerField(null=True,blank=True)
-     customer = models.CharField(max_length=50,null=False,blank=True)
-     branch = models.CharField(max_length=50,null=False)
-     status = models.BooleanField(default=False, null=True,blank=True)
-     narration = models.CharField(max_length=500, null=True,blank=True)
-     date = models.DateField()
-     total_amount = models.DecimalField(max_digits=15,decimal_places=2)
-     discount = models.DecimalField(max_digits=15,decimal_places=2, null=True,blank=True)
-     grant_total = models.DecimalField(max_digits=15,decimal_places=2)
-     journal_entry = models.ForeignKey(JournalEntry, on_delete=models.CASCADE, null=True, blank=True)
-
-
-class C_Invoice(models.Model):
-    key = models.ForeignKey(P_Invoice, on_delete=models.CASCADE, related_name='child', null=True, blank=True)
-    item = models.CharField(max_length=60,null=False)
-    quantity = models.IntegerField(null=False)
-    price = models.DecimalField(max_digits=15,decimal_places=2)
-    sub_total = models.DecimalField(max_digits=15,decimal_places=2)
-
 
 class Parent(models.Model):
     invoice_no = models.IntegerField()
@@ -174,6 +152,25 @@ class ChildInvoice(models.Model):
     price = models.DecimalField(max_digits=15,decimal_places=2)
     sub_total = models.DecimalField(max_digits=15,decimal_places=2)
 
+class InvoiceLine(models.Model):
+    item = models.CharField(max_length=60,null=False)
+    quantity = models.IntegerField(null=False)
+    price = models.DecimalField(max_digits=15,decimal_places=2)
+    sub_total = models.DecimalField(max_digits=15,decimal_places=2)
+
+class SalesInvoice(models.Model):
+    invoice_no = models.IntegerField()
+    doc_no = models.IntegerField(null=True,blank=True)
+    customer = models.CharField(max_length=50,null=False,blank=True)
+    branch = models.CharField(max_length=50,null=False)
+    status = models.BooleanField(default=False, null=True,blank=True)
+    narration = models.CharField(max_length=500, null=True,blank=True)
+    date = models.DateField()
+    total_amount = models.DecimalField(max_digits=15,decimal_places=2)
+    discount = models.DecimalField(max_digits=15,decimal_places=2, null=True,blank=True)
+    grant_total = models.DecimalField(max_digits=15,decimal_places=2)
+    journal_entry = models.ForeignKey(JournalEntry, on_delete=models.CASCADE, null=True, blank=True)
+    child = models.ManyToManyField(InvoiceLine)
 
 class CustomerReceipt(models.Model):
     reciept_no = models.IntegerField()

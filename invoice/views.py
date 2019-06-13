@@ -63,43 +63,20 @@ class ItemViewset(viewsets.ModelViewSet):
         """Return objects for the current authenticated user only"""
         return self.queryset.order_by('id')
 
-
-class C_InvoiceViewset(viewsets.ModelViewSet):
-    """created a view for nested serializer-child data"""
-
-    queryset = models.C_Invoice.objects.all()
-    serializer_class = serializers.C_InvoiceSerializer
-
-    filter_backends = (filters.SearchFilter,)
-    search_fields = ("item","key")
-
-
-class P_InvoiceViewset(viewsets.ModelViewSet):
-    """created a view for nested serializer - parent data"""
-
-    queryset = models.P_Invoice.objects.all()
-    serializer_class = serializers.P_InvoiceSerializer
-
-    filter_backends = (filters.SearchFilter,)
-    search_fields = ("name",)
-
-    def get_queryset(self):
-        """Return objects for the current authenticated user only"""
-        return self.queryset.order_by('id')
-
 # journal entry
 
 class AccountViewset(viewsets.ModelViewSet):
     queryset = models.Account.objects.all()
     serializer_class = serializers.AccountSerializer
 
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ("type",)
+
     def get_queryset(self):
         return self.queryset.order_by('id')
 
 
-
 class JournalItemViewset(viewsets.ModelViewSet):
-
     queryset = models.JournalItem.objects.all()
     serializer_class = serializers.JournalItemSerializer
 
@@ -108,7 +85,6 @@ class JournalItemViewset(viewsets.ModelViewSet):
 
 
 class JournalEntryViewset(viewsets.ModelViewSet):
-
     queryset = models.JournalEntry.objects.all()
     serializer_class = serializers.JournalEntrySerializer
 
@@ -116,27 +92,29 @@ class JournalEntryViewset(viewsets.ModelViewSet):
         return self.queryset.order_by('id')
 
 
-# class Sample(View):
-#     @csrf_exempt
-#     def dispatch(self, *args, **kwargs):
-#         # import ipdb; ipdb.set_trace()
-#         return super().dispatch(*args, **kwargs)
-#
-#     def foo_bar(self,http_res):
-#         print(http_res,'/////')
-#         return http_res
-#
-#     def post(self, request):
-#         result = request.body
-#         http_response = HttpResponse(result)
-#         self.foo_bar(result)
-#         return http_response
+class SalesInvoiceViewSet(viewsets.ModelViewSet):
+    queryset = models.SalesInvoice.objects.all()
+    serializer_class = serializers.ParantInvoiceSerializerTest
 
+    def get_queryset(self):
+        return self.queryset.order_by('id')
 
 
 class ParentInvoiceViewSet(viewsets.ModelViewSet):
     queryset = models.Parent.objects.all()
     serializer_class = serializers.ParentInvoiceSerializer
+
+    def get_queryset(self):
+        return self.queryset.order_by('id')
+
+
+class InvoiceLineViewSet(viewsets.ModelViewSet):
+    queryset = models.InvoiceLine.objects.all()
+    serializer_class = serializers.InvoiceLineSerializer
+
+    def get_queryset(self):
+        """Return objects for the current authenticated user only"""
+        return self.queryset.order_by('id')
 
 
 class ChildInvoiceViewset(viewsets.ModelViewSet):
@@ -144,7 +122,6 @@ class ChildInvoiceViewset(viewsets.ModelViewSet):
 
     queryset = models.ChildInvoice.objects.all()
     serializer_class = serializers.ChildInvoiceSerializer
-
 
     def get_queryset(self):
         """Return objects for the current authenticated user only"""
@@ -160,6 +137,7 @@ class AccountDefaultViewSet(viewsets.ModelViewSet):
     #         return self.queryset
     #     return None
 
+
 class CustomerReceiptViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.CustomerReceiptSerializer
     queryset = models.CustomerReceipt.objects.all()
@@ -168,12 +146,14 @@ class CustomerReceiptViewSet(viewsets.ModelViewSet):
         """return objects"""
         return self.queryset.order_by('id')
 
+
 class ExpenseCategoryViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.ExpenseCategorySerializer
     queryset = models.ExpenseCategory.objects.all()
 
     def get_queryset(self):
         return self.queryset.order_by('id')
+
 
 class ExpenseViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.ExpenseSerializer
