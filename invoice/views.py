@@ -74,9 +74,9 @@ class AccountViewset(viewsets.ModelViewSet):
     queryset = models.Account.objects.all()
     serializer_class = serializers.AccountSerializer
 
-    # filter_backends = (filters.SearchFilter,)
-    # search_fields = ("type",)
-    # filter_fields = ("type",)
+    filter_backends = (SearchFilter,)
+    search_fields = ("type",)
+    filter_fields = ("type",)
 
 
     def get_queryset(self):
@@ -167,10 +167,31 @@ class AccountDefaultViewSet(viewsets.ModelViewSet):
     #         return self.queryset
     #     return None
 
+class CustomerReceiptFilter(FilterSet):
+    start_date = filters.DateFilter(method="filter_by_start_date")
+    end_date = filters.DateFilter(method="filter_by_end_date")
+    class Meta:
+        model = models.CustomerReceipt
+        fields = "__all__"
+        lookup_fields = ["journal_entry","journal_item","partner"]
+        # fields = ["customer","date"]
+
+    def filter_by_start_date(self, queryset, name, value):
+        queryset = queryset.filter(journal_entry__date__gte = value)
+        return queryset
+
+    def filter_by_end_date(self, queryset, name, value):
+        queryset = queryset.filter(journal_entry__date__lte = value)
+        return queryset
+
+
 
 class CustomerReceiptViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.CustomerReceiptSerializer
     queryset = models.CustomerReceipt.objects.all()
+    filter_backends = (DjangoFilterBackend,OrderingFilter, SearchFilter)
+    filter_class = CustomerReceiptFilter
+    search_fields = ('date',)
 
     def get_queryset(self):
         """return objects"""
