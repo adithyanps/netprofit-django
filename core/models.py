@@ -55,7 +55,22 @@ class Customer(models.Model):
     def __str__(self):
         return self.customer
 
+class Partner(models.Model):
+    CHOICES =(
+    ('CUSTOMER','Customer'),
+    ('SUPPLIER','Supplier'),
+    ('BOTH','Both')
+    )
+    customer_id = models.CharField(max_length=20)
+    name = models.CharField(max_length=60)
+    type = models.CharField(max_length=100, choices=CHOICES, default='CUSTOMER',null=True, blank=True)
+    created_date = models.DateTimeField(auto_now_add=True)
+    modified_date = models.DateTimeField(auto_now=True)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
+    edited_by = models.ForeignKey(settings.AUTH_USER_MODEL,related_name="edited_by",on_delete=models.CASCADE,null=True,blank=True)
 
+    # class Meta:
+    #     abstract = True
 class Branch(models.Model):
     branch = models.CharField(max_length=50)
     def __str__(self):

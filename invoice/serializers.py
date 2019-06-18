@@ -1,6 +1,7 @@
 from rest_framework import serializers,fields
 from core.models import (
-        Customer,Branch,Item,
+        Customer,Partner,
+        Branch,Item,
         JournalEntry,Account,JournalItem,
         ChildInvoice,Parent,
         SalesInvoice,
@@ -15,6 +16,11 @@ class CustomerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Customer
         fields = ['id','customer']
+
+class PartnerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Partner
+        fields = "__all__"
 
 
 class BranchSerializer(serializers.ModelSerializer):

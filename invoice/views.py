@@ -28,14 +28,25 @@ import django_filters
 from django_filters import rest_framework as filters
 
 # Create your views here.
+class PartnerViewSet(viewsets.ModelViewSet):
+    queryset = models.Partner.objects.all()
+    serializer_class = serializers.PartnerSerializer
+
+    filter_backends = (SearchFilter,)
+    search_fields = ("name",)
+
+    def get_queryset(self):
+        """Return objects for the current authenticated user only"""
+        return self.queryset.order_by('id')
+        
 class CustomerViewset(viewsets.ModelViewSet):
     """create ,delete ,edit and view customers"""
     queryset = models.Customer.objects.all()
     serializer_class = serializers.CustomerSerializer
 
     """search json data on api"""
-    # filter_backends = (filters.SearchFilter,)
-    # search_fields = ("name",)
+    filter_backends = (SearchFilter,)
+    search_fields = ("customer",)
 
     def get_queryset(self):
         """Return objects for the current authenticated user only"""
@@ -48,8 +59,8 @@ class BranchViewset(viewsets.ModelViewSet):
     serializer_class = serializers.BranchSerializer
 
     """filter option on api"""
-    # filter_backends = (filters.SearchFilter,)
-    # search_fields = ("branch",)
+    filter_backends = (SearchFilter,)
+    search_fields = ("branch",)
 
     def get_queryset(self):
         """return objects"""
@@ -61,8 +72,8 @@ class ItemViewset(viewsets.ModelViewSet):
     queryset = models.Item.objects.all()
     serializer_class = serializers.ItemsSerializer
 
-    # filter_backends = (filters.SearchFilter,)
-    # search_fields = ("item",)
+    filter_backends = (SearchFilter,)
+    search_fields = ("item",)
 
     def get_queryset(self):
         """Return objects for the current authenticated user only"""
@@ -201,6 +212,9 @@ class CustomerReceiptViewSet(viewsets.ModelViewSet):
 class ExpenseCategoryViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.ExpenseCategorySerializer
     queryset = models.ExpenseCategory.objects.all()
+
+    filter_backends = (SearchFilter,)
+    search_fields = ("name",)
 
     def get_queryset(self):
         return self.queryset.order_by('id')
