@@ -25,9 +25,9 @@ class UserAdmin(BaseUserAdmin):
         }),
     )
 admin.site.register(models.User, UserAdmin)
-admin.site.register(models.Customer)
 admin.site.register(models.Branch)
-admin.site.register(models.Item)
+admin.site.register(models.Product)
+admin.site.register(models.ProductCategory)
 admin.site.register(models.AccountDefault)
 admin.site.register(models.Account)
 admin.site.register(models.ExpenseCategory)

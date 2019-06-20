@@ -1,8 +1,9 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import (
-            CustomerViewset,PartnerViewSet,
-            BranchViewset,ItemViewset,
+            PartnerViewSet,
+            BranchViewset,
+            ItemViewset,ProductCategoryViewSet,
             AccountViewset,JournalItemViewset,
             JournalEntryViewset,
             ParentInvoiceViewSet,ChildInvoiceViewset,
@@ -13,9 +14,9 @@ from .views import (
             )
 
 router = DefaultRouter()
-# router.register('customer', CustomerViewset)
 router.register('partner', PartnerViewSet)
 router.register('branch', BranchViewset)
+router.register('product-category', ProductCategoryViewSet)
 router.register('item', ItemViewset)
 router.register('parantdata', SalesInvoiceViewSet)
 router.register('invoiceLine', InvoiceLineViewSet)

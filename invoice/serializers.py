@@ -1,7 +1,7 @@
 from rest_framework import serializers,fields
 from core.models import (
-        Customer,Partner,
-        Branch,Item,
+        Partner,Branch,
+        Product,ProductCategory,
         JournalEntry,Account,JournalItem,
         ChildInvoice,Parent,
         SalesInvoice,
@@ -12,10 +12,7 @@ from core.models import (
 from rest_framework.validators import UniqueTogetherValidator
 from drf_writable_nested import WritableNestedModelSerializer
 
-class CustomerSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Customer
-        fields = ['id','customer']
+
 
 class PartnerSerializer(serializers.ModelSerializer):
     class Meta:
@@ -29,10 +26,16 @@ class BranchSerializer(serializers.ModelSerializer):
         fields = ['id','branch']
 
 
+class ProductCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductCategory
+        fields = "__all__"
+
+
 class ItemsSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Item
-        fields = ['id','item','price']
+        model = Product
+        fields = ['id','item','price','product_Cat']
 
 class ChildInvoiceSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False)

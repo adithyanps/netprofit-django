@@ -50,11 +50,6 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 #invoice models
 
-class Customer(models.Model):
-    customer = models.CharField(max_length=50)
-    def __str__(self):
-        return self.customer
-
 class Partner(models.Model):
     CHOICES =(
     ('CUSTOMER','Customer'),
@@ -76,9 +71,14 @@ class Branch(models.Model):
     def __str__(self):
         return self.branch
 
-class Item(models.Model):
+class ProductCategory(models.Model):
+    name = models.CharField(max_length=50,null=False)
+    ParentCategory = models.ForeignKey('core.ProductCategory',on_delete=models.CASCADE, null=True,blank=True)
+
+class Product(models.Model):
     item = models.CharField(max_length=50,null=False)
     price = models.DecimalField(max_digits=15,decimal_places=2)
+    product_Cat = models.ForeignKey('core.ProductCategory',on_delete=models.CASCADE)
 
     def __str__(self):
         return self.item
@@ -132,7 +132,7 @@ class AccountDefault(models.Model):
 class JournalItem(models.Model):
     journal_entry = models.ForeignKey('core.JournalEntry', on_delete=models.CASCADE)
     account = models.ForeignKey(Account, on_delete=models.CASCADE, null=True, blank=True)
-    partner = models.ForeignKey(Customer, on_delete=models.CASCADE, null=True, blank=True)
+    partner = models.ForeignKey(Partner, on_delete=models.CASCADE, null=True, blank=True)
     debit_amount = models.DecimalField(max_digits=15,decimal_places=2,null=True, blank=True)
     credit_amount = models.DecimalField(max_digits=15,decimal_places=2,null=True, blank=True)
 #

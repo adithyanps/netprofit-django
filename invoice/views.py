@@ -38,19 +38,7 @@ class PartnerViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         """Return objects for the current authenticated user only"""
         return self.queryset.order_by('id')
-        
-class CustomerViewset(viewsets.ModelViewSet):
-    """create ,delete ,edit and view customers"""
-    queryset = models.Customer.objects.all()
-    serializer_class = serializers.CustomerSerializer
 
-    """search json data on api"""
-    filter_backends = (SearchFilter,)
-    search_fields = ("customer",)
-
-    def get_queryset(self):
-        """Return objects for the current authenticated user only"""
-        return self.queryset.order_by('id')
 
 
 class BranchViewset(viewsets.ModelViewSet):
@@ -66,10 +54,21 @@ class BranchViewset(viewsets.ModelViewSet):
         """return objects"""
         return self.queryset.order_by('id')
 
+class ProductCategoryViewSet(viewsets.ModelViewSet):
+    queryset = models.ProductCategory.objects.all()
+    serializer_class = serializers.ProductCategorySerializer
+
+    filter_backends = (SearchFilter,)
+    search_fields = ("name",)
+
+    def get_queryset(self):
+        """return objects"""
+        return self.queryset.order_by('id')
+
 
 class ItemViewset(viewsets.ModelViewSet):
     """create a new item and see all items"""
-    queryset = models.Item.objects.all()
+    queryset = models.Product.objects.all()
     serializer_class = serializers.ItemsSerializer
 
     filter_backends = (SearchFilter,)
