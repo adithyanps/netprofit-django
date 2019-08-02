@@ -53,6 +53,12 @@ class BranchViewset(viewsets.ModelViewSet):
     def get_queryset(self):
         """return objects"""
         return self.queryset.order_by('id')
+class AreaViewSet(viewsets.ModelViewSet):
+    queryset = models.Area.objects.all()
+    serializer_class = serializers.AreaSerializer
+
+    filter_backends = (SearchFilter,)
+    search_fields = ("area",)
 
 class ProductCategoryViewSet(viewsets.ModelViewSet):
     queryset = models.ProductCategory.objects.all()
@@ -139,29 +145,9 @@ class SalesInvoiceViewSet(viewsets.ModelViewSet):
         return self.queryset.order_by('id')
 
 
-class ParentInvoiceViewSet(viewsets.ModelViewSet):
-    queryset = models.Parent.objects.all()
-    serializer_class = serializers.ParentInvoiceSerializer
-
-    def get_queryset(self):
-        return self.queryset.order_by('id')
-
-
-
 class InvoiceLineViewSet(viewsets.ModelViewSet):
     queryset = models.InvoiceLine.objects.all()
     serializer_class = serializers.InvoiceLineSerializer
-
-    def get_queryset(self):
-        """Return objects for the current authenticated user only"""
-        return self.queryset.order_by('id')
-
-
-class ChildInvoiceViewset(viewsets.ModelViewSet):
-    """created a view for nested serializer - parent data"""
-
-    queryset = models.ChildInvoice.objects.all()
-    serializer_class = serializers.ChildInvoiceSerializer
 
     def get_queryset(self):
         """Return objects for the current authenticated user only"""
@@ -248,3 +234,57 @@ class ExpenseViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return self.queryset.order_by('id')
+
+#  charts
+
+class SalesPartnerChartViewset(viewsets.ModelViewSet):
+    serializer_class = serializers.SalesPartnerChartSerializer
+    queryset = models.SalesInvoice.objects.all()
+
+    dict = {}
+    for d in queryset.values():
+        a,b,c,d,e,f,g,h,i,k,l,m = d.values()
+        dict[d] = dict.get(d,0) + l
+    user = [{'customer':n,'grant_total':t} for n,t in dict.items()]
+    datas= user
+    newlist = sorted(datas, key=lambda z: z['customer'])
+    queryset = serializers.SalesPartnerChartSerializer(newlist, many=True).data
+
+class SalesYearIncomeChartViewset(viewsets.ModelViewSet):
+    serializer_class = serializers.SalesYearIncomeChartSerializer
+    queryset = models.SalesInvoice.objects.all()
+
+    def list(self, request):
+        queryset =  models.SalesInvoice.objects.all()
+        date_list = []
+        a = []
+        b =[]
+        amount1 = []
+        year = []
+        for d in queryset:
+            if d.date.year not in date_list:
+                date_list.append(d.date.year)
+        for da in date_list:
+            b = models.SalesInvoice.objects.filter(date__year=da)
+            amount = 0
+            for i in b:
+                if i.date.year == da:
+                    amount = i.grant_total + amount
+            amount1.append(amount)
+            year.append(i.date.year)
+        list = []
+        final_list = []
+        for (a,b) in zip(year,amount1):
+            templist = []
+            templist.append(a)
+            templist.append(b)
+            list.append(templist)
+        list2 = ['year','grant_total']
+        for i in list:
+            temp_dict = dict(zip(list2,i))
+            final_list.append(temp_dict)
+        datas = final_list
+        newlist = sorted(datas, key=lambda k: k['year'])
+
+        queryset = serializers.SalesYearIncomeChartSerializer(newlist, many=True).data
+        return Response(queryset)

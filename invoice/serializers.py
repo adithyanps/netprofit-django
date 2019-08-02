@@ -1,13 +1,14 @@
 from rest_framework import serializers,fields
 from core.models import (
-        Partner,Branch,
+        Partner,Branch,Area,
         Product,ProductCategory,
         JournalEntry,Account,JournalItem,
-        ChildInvoice,Parent,
+        # ChildInvoice,Parent,
+        InvoiceLine,
         SalesInvoice,
         AccountDefault,CustomerReceipt,
         ExpenseCategory,Expenses,
-        InvoiceLine
+        YearCharts,
         )
 from rest_framework.validators import UniqueTogetherValidator
 from drf_writable_nested import WritableNestedModelSerializer
@@ -25,6 +26,10 @@ class BranchSerializer(serializers.ModelSerializer):
         model = Branch
         fields = ['id','branch']
 
+class AreaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Area
+        fields = "__all__"
 
 class ProductCategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -37,18 +42,18 @@ class ItemsSerializer(serializers.ModelSerializer):
         model = Product
         fields = ['id','item','price','product_Cat']
 
-class ChildInvoiceSerializer(serializers.ModelSerializer):
-    id = serializers.IntegerField(required=False)
-
-    class Meta:
-        model = ChildInvoice
-        fields = [
-            'id',
-            'key',
-            'item','price','quantity','sub_total'
-        ]
-        read_only_fields = ('key',)
-        # depth = 1
+# class ChildInvoiceSerializer(serializers.ModelSerializer):
+#     id = serializers.IntegerField(required=False)
+#
+#     class Meta:
+#         model = ChildInvoice
+#         fields = [
+#             'id',
+#             'key',
+#             'item','price','quantity','sub_total'
+#         ]
+#         read_only_fields = ('key',)
+#         # depth = 1
 
 class InvoiceLineSerializer(serializers.ModelSerializer):
     class Meta:
@@ -56,78 +61,78 @@ class InvoiceLineSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class ParentInvoiceSerializer(serializers.ModelSerializer):
-    child = ChildInvoiceSerializer(many=True)
-
-    class Meta:
-        model = Parent
-        fields = [
-            "id",
-            'invoice_no', 'doc_no',
-            'customer', 'branch', 'status',
-            'narration', 'date', 'total_amount',
-            'discount', 'grant_total',
-            'journal_entry',
-            "child",
-        ]
-        # read_only_fields = ["tags"]
-    def create(self, validated_data):
-        journal_entry_instance = JournalEntry.objects.create(date=validated_data['date'],
-                                                             description=validated_data['narration'])
-       # #'transaction_type' will be "SALES" by default
-        # account_instance = Account.objects.create(name="some name")
-        account_instance = Account.objects.get(pk=1)
-       #
-        journal_item_instnce = JournalItem.objects.create(journal_entry=journal_entry_instance,
-                                                          account=account_instance,
-                                                          debit_amount=validated_data['total_amount'],
-                                                          credit_amount=validated_data['total_amount'])
-
-        child = validated_data.pop('child',[])
-        key = Parent.objects.create(journal_entry=journal_entry_instance, **validated_data)
-        # key = Parent.objects.create( **validated_data)
-
-        for choice in child:
-            ChildInvoice.objects.create(**choice, key=key)
-        return key
-
-    def update(self, instance, validated_data):
-        child = validated_data.pop('child')
-        instance.invoice_no = validated_data.get('invoice_no', instance.invoice_no)
-        instance.doc_no = validated_data.get('doc_no', instance.doc_no)
-        instance.customer = validated_data.get('customer', instance.customer)
-        instance.branch = validated_data.get('branch', instance.branch)
-        instance.status = validated_data.get('status', instance.status)
-        instance.narration = validated_data.get('narration', instance.narration)
-        instance.date = validated_data.get('date', instance.date)
-        instance.total_amount = validated_data.get('total_amount', instance.total_amount)
-        instance.discount = validated_data.get('discount', instance.discount)
-        instance.grant_total = validated_data.get('grant_total', instance.grant_total)
-
-        instance.save()
-        keep_choices = []
-        for choice in child:
-            if "id" in choice.keys():
-                if ChildInvoice.objects.filter(id=choice["id"]).exists():
-                    c = ChildInvoice.objects.get(id=choice["id"])
-                    c.item = choice.get('item', c.item)
-                    c.price = choice.get('price', c.price)
-                    c.quantity = choice.get('quantity', c.quantity)
-                    c.sub_total = choice.get('sub_total', c.sub_total)
-
-                    c.save()
-                    keep_choices.append(c.id)
-                else:
-                    continue
-            else:
-                c = ChildInvoice.objects.create(**choice, key=instance)
-                keep_choices.append(c.id)
-        print(instance.child,'///////////////////////////')
-        for choice in instance.child:
-            if choice.id not in keep_choices:
-                choice.delete()
-
-        return instance
+# class ParentInvoiceSerializer(serializers.ModelSerializer):
+#     child = ChildInvoiceSerializer(many=True)
+#
+#     class Meta:
+#         model = Parent
+#         fields = [
+#             "id",
+#             'invoice_no', 'doc_no',
+#             'customer', 'branch', 'status',
+#             'narration', 'date', 'total_amount',
+#             'discount', 'grant_total',
+#             'journal_entry',
+#             "child",
+#         ]
+#         # read_only_fields = ["tags"]
+#     def create(self, validated_data):
+#         journal_entry_instance = JournalEntry.objects.create(date=validated_data['date'],
+#                                                              description=validated_data['narration'])
+#        # #'transaction_type' will be "SALES" by default
+#         # account_instance = Account.objects.create(name="some name")
+#         account_instance = Account.objects.get(pk=1)
+#        #
+#         journal_item_instnce = JournalItem.objects.create(journal_entry=journal_entry_instance,
+#                                                           account=account_instance,
+#                                                           debit_amount=validated_data['total_amount'],
+#                                                           credit_amount=validated_data['total_amount'])
+#
+#         child = validated_data.pop('child',[])
+#         key = Parent.objects.create(journal_entry=journal_entry_instance, **validated_data)
+#         # key = Parent.objects.create( **validated_data)
+#
+#         for choice in child:
+#             ChildInvoice.objects.create(**choice, key=key)
+#         return key
+#
+#     def update(self, instance, validated_data):
+#         child = validated_data.pop('child')
+#         instance.invoice_no = validated_data.get('invoice_no', instance.invoice_no)
+#         instance.doc_no = validated_data.get('doc_no', instance.doc_no)
+#         instance.customer = validated_data.get('customer', instance.customer)
+#         instance.branch = validated_data.get('branch', instance.branch)
+#         instance.status = validated_data.get('status', instance.status)
+#         instance.narration = validated_data.get('narration', instance.narration)
+#         instance.date = validated_data.get('date', instance.date)
+#         instance.total_amount = validated_data.get('total_amount', instance.total_amount)
+#         instance.discount = validated_data.get('discount', instance.discount)
+#         instance.grant_total = validated_data.get('grant_total', instance.grant_total)
+#
+#         instance.save()
+#         keep_choices = []
+#         for choice in child:
+#             if "id" in choice.keys():
+#                 if ChildInvoice.objects.filter(id=choice["id"]).exists():
+#                     c = ChildInvoice.objects.get(id=choice["id"])
+#                     c.item = choice.get('item', c.item)
+#                     c.price = choice.get('price', c.price)
+#                     c.quantity = choice.get('quantity', c.quantity)
+#                     c.sub_total = choice.get('sub_total', c.sub_total)
+#
+#                     c.save()
+#                     keep_choices.append(c.id)
+#                 else:
+#                     continue
+#             else:
+#                 c = ChildInvoice.objects.create(**choice, key=instance)
+#                 keep_choices.append(c.id)
+#         print(instance.child,'///////////////////////////')
+#         for choice in instance.child:
+#             if choice.id not in keep_choices:
+#                 choice.delete()
+#
+#         return instance
 class AccountSerializer(serializers.ModelSerializer):
     class Meta:
         model = Account
@@ -236,3 +241,13 @@ class ParantInvoiceSerializerTest(WritableNestedModelSerializer):
     class Meta:
         model = SalesInvoice
         fields = "__all__"
+#  charts
+class SalesPartnerChartSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SalesInvoice
+        fields = ("customer","grant_total")
+
+class SalesYearIncomeChartSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = YearCharts
+        fields = ('year',"grant_total")

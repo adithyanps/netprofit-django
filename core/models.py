@@ -49,6 +49,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'email'
 
 #invoice models
+class Area(models.Model):
+    area = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.area
 
 class Partner(models.Model):
     CHOICES =(
@@ -59,6 +64,7 @@ class Partner(models.Model):
     customer_id = models.CharField(max_length=20)
     name = models.CharField(max_length=60)
     type = models.CharField(max_length=100, choices=CHOICES, default='CUSTOMER',null=True, blank=True)
+    area = models.ForeignKey(Area,on_delete=models.CASCADE,null=True)
     created_date = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
@@ -71,9 +77,11 @@ class Branch(models.Model):
     def __str__(self):
         return self.branch
 
+
 class ProductCategory(models.Model):
     name = models.CharField(max_length=50,null=False)
     ParentCategory = models.ForeignKey('core.ProductCategory',on_delete=models.CASCADE, null=True,blank=True)
+
 
 class Product(models.Model):
     item = models.CharField(max_length=50,null=False)
@@ -135,43 +143,14 @@ class JournalItem(models.Model):
     partner = models.ForeignKey(Partner, on_delete=models.CASCADE, null=True, blank=True)
     debit_amount = models.DecimalField(max_digits=15,decimal_places=2,null=True, blank=True)
     credit_amount = models.DecimalField(max_digits=15,decimal_places=2,null=True, blank=True)
-#
 
-
-class Parent(models.Model):
-    invoice_no = models.IntegerField()
-    doc_no = models.IntegerField(null=True,blank=True)
-    customer = models.CharField(max_length=50,null=False,blank=True)
-    branch = models.CharField(max_length=50,null=False)
-    status = models.BooleanField(default=False, null=True,blank=True)
-    narration = models.CharField(max_length=500, null=True,blank=True)
-    date = models.DateField()
-    total_amount = models.DecimalField(max_digits=15,decimal_places=2)
-    discount = models.DecimalField(max_digits=15,decimal_places=2, null=True,blank=True)
-    grant_total = models.DecimalField(max_digits=15,decimal_places=2)
-    journal_entry = models.ForeignKey(JournalEntry, on_delete=models.CASCADE, null=True, blank=True)
-
-
-    def __str__(self):
-        return self.title
-    #
-    @property
-    def child(self):
-        return self.childinvoice_set.all()
-
-
-class ChildInvoice(models.Model):
-    key = models.ForeignKey('core.Parent', on_delete=models.CASCADE)
-    item = models.CharField(max_length=60,null=False)
-    quantity = models.IntegerField(null=False)
-    price = models.DecimalField(max_digits=15,decimal_places=2)
-    sub_total = models.DecimalField(max_digits=15,decimal_places=2)
 
 class InvoiceLine(models.Model):
     item = models.CharField(max_length=60,null=False)
     quantity = models.IntegerField(null=False)
     price = models.DecimalField(max_digits=15,decimal_places=2)
     sub_total = models.DecimalField(max_digits=15,decimal_places=2)
+
 
 class SalesInvoice(models.Model):
     invoice_no = models.IntegerField()
@@ -187,6 +166,7 @@ class SalesInvoice(models.Model):
     journal_entry = models.ForeignKey(JournalEntry, on_delete=models.CASCADE, null=True, blank=True)
     child = models.ManyToManyField(InvoiceLine)
 
+
 class CustomerReceipt(models.Model):
     reciept_no = models.IntegerField()
     journal_entry = models.ForeignKey(JournalEntry, on_delete=models.CASCADE, null=True, blank=True)
@@ -196,6 +176,7 @@ class CustomerReceipt(models.Model):
 class ExpenseCategory(models.Model):
     name = models.CharField(max_length=60,null=False)
 
+
 class Expenses(models.Model):
     Doc_no = models.IntegerField()
     ExpenseCategory = models.ForeignKey(ExpenseCategory, on_delete=models.CASCADE, null=False, blank=False)
@@ -204,3 +185,7 @@ class Expenses(models.Model):
     CreditAcct = models.ForeignKey(Account,related_name='CreditAcct', on_delete=models.CASCADE, null=False, blank=False)
     Amount = models.DecimalField(max_digits=15,decimal_places=2)
     journal_entry = models.ForeignKey(JournalEntry, on_delete=models.CASCADE, null=True, blank=True)
+# charts
+class YearCharts(models.Model):
+    year = models.CharField(max_length=6)
+    grant_total = models.DecimalField(max_digits=15,decimal_places=2)
