@@ -9,6 +9,7 @@ from core.models import (
         AccountDefault,CustomerReceipt,
         ExpenseCategory,Expenses,
         YearCharts,
+        ExpenseYearChart,
         )
 from rest_framework.validators import UniqueTogetherValidator
 from drf_writable_nested import WritableNestedModelSerializer
@@ -251,3 +252,15 @@ class SalesYearIncomeChartSerializer(serializers.ModelSerializer):
     class Meta:
         model = YearCharts
         fields = ('year',"grant_total")
+
+class ExpenseYearChartSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ExpenseYearChart
+        fields = ('year','grant_total')
+
+class Expense_Cat_Vers_AmountChartSerializer(serializers.ModelSerializer):
+    expense_Cat = serializers.CharField()
+    amount = serializers.IntegerField()
+    class Meta:
+        # model = "__null__"
+        fields = ('expense_Cat','amount')

@@ -189,3 +189,7 @@ class Expenses(models.Model):
 class YearCharts(models.Model):
     year = models.CharField(max_length=6)
     grant_total = models.DecimalField(max_digits=15,decimal_places=2)
+
+class ExpenseYearChart(models.Model):
+    year = models.CharField(max_length=6)
+    grant_total = models.DecimalField(max_digits=15,decimal_places=2)

@@ -26,6 +26,7 @@ from rest_framework.filters import OrderingFilter,SearchFilter
 from django_filters import FilterSet
 import django_filters
 from django_filters import rest_framework as filters
+import calendar
 
 # Create your views here.
 class PartnerViewSet(viewsets.ModelViewSet):
@@ -248,6 +249,7 @@ class SalesPartnerChartViewset(viewsets.ModelViewSet):
     user = [{'customer':n,'grant_total':t} for n,t in dict.items()]
     datas= user
     newlist = sorted(datas, key=lambda z: z['customer'])
+    # print(newlist,"//")
     queryset = serializers.SalesPartnerChartSerializer(newlist, many=True).data
 
 class SalesYearIncomeChartViewset(viewsets.ModelViewSet):
@@ -288,3 +290,151 @@ class SalesYearIncomeChartViewset(viewsets.ModelViewSet):
 
         queryset = serializers.SalesYearIncomeChartSerializer(newlist, many=True).data
         return Response(queryset)
+class Sales_PartnerWithYear_ChartViewSet(viewsets.ModelViewSet):
+    """get total amount of each person based on every year"""
+
+    queryset =  models.SalesInvoice.objects.all()
+
+    def list(self, request):
+        queryset = models.SalesInvoice.objects.all()
+        date_list = []
+        name_list = []
+        month_list1 = []
+        final_list = []
+        for d in queryset:
+            if d.customer not in name_list:
+                name_list.append(d.customer)
+            if d.date.year not in date_list:
+                date_list.append(d.date.year)
+        b=[]
+        for da in name_list:
+            for yr in date_list:
+                month_list = []
+                list = []
+                b = models.SalesInvoice.objects.filter(customer=da, date__year=yr)
+                result = []
+                for i in b:
+                    temp = {"month": calendar.month_name[i.date.month], "amount": i.total_amount,"customer":i.customer,"year":i.date.year}
+                    month_list.append(temp)
+                month_list1.append(month_list)
+        month_list_nu = [x for x in month_list1 if x != []]
+        for i in month_list_nu:
+            result = defaultdict(int)
+            month_sum =[]
+            for d in i:
+                result[d['month']] += int(d['amount'])
+                month_sum = [{'month': month, 'amount': amount} for month, amount in result.items()]
+            dict = {}
+            dict['child'] = month_sum
+            for name in i:
+                dict['customer']=name['customer']
+                dict['year']=name['year']
+            final_list.append(dict)
+        datas =final_list
+        print(datas,"???")
+        return JsonResponse(datas,safe=False)
+
+class ExpenseYearIncomeChartViewset(viewsets.ModelViewSet):
+    serializer_class = serializers.ExpenseYearChartSerializer
+    queryset = models.Expenses.objects.all()
+
+    def list(self, request):
+        queryset =  models.Expenses.objects.all()
+        date_list = []
+        a = []
+        b =[]
+        amount1 = []
+        year = []
+        for d in queryset:
+            if d.Date.year not in date_list:
+                date_list.append(d.Date.year)
+        for da in date_list:
+            b = models.Expenses.objects.filter(Date__year=da)
+            amount = 0
+            for i in b:
+                if i.Date.year == da:
+                    amount = i.Amount + amount
+            amount1.append(amount)
+            year.append(i.Date.year)
+        list = []
+        final_list = []
+        for (a,b) in zip(year,amount1):
+            templist = []
+            templist.append(a)
+            templist.append(b)
+            list.append(templist)
+        list2 = ['year','grant_total']
+        for i in list:
+            temp_dict = dict(zip(list2,i))
+            final_list.append(temp_dict)
+        datas = final_list
+        newlist = sorted(datas, key=lambda k: k['year'])
+
+        queryset = serializers.ExpenseYearChartSerializer(newlist, many=True).data
+        return Response(queryset)
+
+class Expense_Cat_Vers_Year_AmountChartViewset(viewsets.ModelViewSet):
+    # serializer_class = serializers.ExpenseYearChartSerializer
+    queryset = models.Expenses.objects.all()
+
+    def list(self, request):
+
+        queryset = models.Expenses.objects.all()
+        date_list = []
+        name_list = []
+        month_list1 = []
+        final_list = []
+        for d in queryset:
+            if d.ExpenseCategory.name not in name_list:
+                name_list.append(d.ExpenseCategory.name)
+            if d.Date.year not in date_list:
+                date_list.append(d.Date.year)
+        b=[]
+        for da in name_list:
+            for yr in date_list:
+                month_list = []
+                list = []
+                print(yr)
+                b = models.Expenses.objects.filter(ExpenseCategory__name=da,Date__year=yr)
+                result = []
+                for i in b:
+                    temp = {"month": calendar.month_name[i.Date.month], "amount": i.Amount,"ExpenseCategory":i.ExpenseCategory.name,"year":i.Date.year}
+                    month_list.append(temp)
+                month_list1.append(month_list)
+        month_list_nu = [x for x in month_list1 if x != []]
+        print(month_list_nu,"=====")
+        for i in month_list_nu:
+            result = defaultdict(int)
+            month_sum =[]
+            for d in i:
+                result[d['month']] += int(d['amount'])
+                month_sum = [{'month': month, 'amount': amount} for month, amount in result.items()]
+            dict = {}
+            dict['child'] = month_sum
+            for name in i:
+                dict['ExpenseCategory']=name['ExpenseCategory']
+                dict['year']=name['year']
+            final_list.append(dict)
+            datas =final_list
+        return JsonResponse(datas,safe=False)
+
+class Expense_Year_Vers_AmountChartViewset(viewsets.ModelViewSet):
+    queryset = models.Expenses.objects.all()
+    date_list = []
+    exCat_list = []
+    for d in queryset:
+        if d.ExpenseCategory.name not in exCat_list:
+            exCat_list.append(d.ExpenseCategory.name)
+        if d.Date.year not in date_list:
+            date_list.append(d.Date.year)
+    print(date_list,"///")
+    print(exCat_list,"///")
+
+    for yr in date_list:
+        for ex in exCat_list:
+            print(ex,yr)
+
+    def list(self, request):
+        queryset = models.Expenses.objects.all()
+        data = [{"a":"2"}]
+        return JsonResponse(data,safe=False)
