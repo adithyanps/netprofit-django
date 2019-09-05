@@ -242,17 +242,23 @@ class SalesPartnerChartViewset(viewsets.ModelViewSet):
     serializer_class = serializers.SalesPartnerChartSerializer
     queryset = models.SalesInvoice.objects.all()
 
-    dict = {}
-    if queryset:
-        print('wroks')
-        for d in queryset.values():
-            a,b,c,d,e,f,g,h,i,k,l,m = d.values()
-            dict[d] = dict.get(d,0) + l
-        user = [{'customer':n,'grant_total':t} for n,t in dict.items()]
-        datas= user
-        newlist = sorted(datas, key=lambda z: z['customer'])
-        # print(newlist,"//")
-        queryset = serializers.SalesPartnerChartSerializer(newlist, many=True).data
+    def list(self, request):
+        queryset = models.SalesInvoice.objects.all()
+
+        if queryset:
+            dict = {}
+
+            print('wroks')
+            for d in queryset.values():
+                a,b,c,d,e,f,g,h,i,k,l,m = d.values()
+                dict[d] = dict.get(d,0) + l
+            user = [{'customer':n,'grant_total':t} for n,t in dict.items()]
+            datas= user
+            newlist = sorted(datas, key=lambda z: z['customer'])
+            # print(newlist,"//")
+            queryset = serializers.SalesPartnerChartSerializer(newlist, many=True).data
+
+        return JsonResponse(queryset,safe=False)
 
 
 class SalesYearIncomeChartViewset(viewsets.ModelViewSet):
