@@ -145,6 +145,25 @@ class SalesInvoiceViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         return self.queryset.order_by('id')
 
+class SalesInvoiceViewSetNu(viewsets.ModelViewSet):
+    queryset = models.SalesInvoiceNu.objects.all()
+    serializer_class = serializers.ParantInvoiceSerializer
+    # filter_backends = (DjangoFilterBackend,OrderingFilter, SearchFilter)
+    # filter_class = SalesInvoiceFilter
+    # search_fields = ('date',"customer")
+
+
+    def get_queryset(self):
+        return self.queryset.order_by('id')
+
+
+class InvoiceLineOldViewSet(viewsets.ModelViewSet):
+    queryset = models.InvoiceLineOld.objects.all()
+    serializer_class = serializers.InvoiceLineOldSerializer
+
+    def get_queryset(self):
+        """Return objects for the current authenticated user only"""
+        return self.queryset.order_by('id')
 
 class InvoiceLineViewSet(viewsets.ModelViewSet):
     queryset = models.InvoiceLine.objects.all()
@@ -235,6 +254,14 @@ class ExpenseViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return self.queryset.order_by('id')
+
+class CreditNoteViewSet(viewsets.ModelViewSet):
+    serializer_class = serializers.CreditNoteSerializer
+    queryset = models.CreditNote.objects.all()
+
+class CreditNoteNumberViewSet(viewsets.ModelViewSet):
+    serializer_class = serializers.CreditNoteNumberSerializer
+    queryset = models.CreditNoteNumber.objects.all()
 
 #  charts
 
@@ -392,7 +419,6 @@ class ExpenseYearIncomeChartViewset(viewsets.ModelViewSet):
 class Expense_Cat_Vers_Year_AmountChartViewset(viewsets.ModelViewSet):
     # serializer_class = serializers.ExpenseYearChartSerializer
     queryset = models.Expenses.objects.all()
-
     def list(self, request):
 
         queryset = models.Expenses.objects.all()
@@ -438,23 +464,29 @@ class Expense_Cat_Vers_Year_AmountChartViewset(viewsets.ModelViewSet):
 
 class Expense_Year_Vers_AmountChartViewset(viewsets.ModelViewSet):
     queryset = models.Expenses.objects.all()
-    # if queryset:
 
-    date_list = []
-    exCat_list = []
-    for d in queryset:
-        if d.ExpenseCategory.name not in exCat_list:
-            exCat_list.append(d.ExpenseCategory.name)
-        if d.Date.year not in date_list:
-            date_list.append(d.Date.year)
-    print(date_list,"///")
-    print(exCat_list,"///")
+    if queryset:
 
-    for yr in date_list:
-        for ex in exCat_list:
-            print(ex,yr)
+        date_list = []
+        exCat_list = []
+        for d in queryset:
+            if d.ExpenseCategory.name not in exCat_list:
+                exCat_list.append(d.ExpenseCategory.name)
+            if d.Date.year not in date_list:
+                date_list.append(d.Date.year)
+        print(date_list,"///")
+        print(exCat_list,"///")
+
+        for yr in date_list:
+            for ex in exCat_list:
+                print(ex,yr)
 
     def list(self, request):
         queryset = models.Expenses.objects.all()
-        data = [{"a":"2"}]
-        return JsonResponse(data,safe=False)
+        # data = [{"a":"2"}]
+
+        if queryset:
+
+            data = [{"a":"2"}]
+        return JsonResponse({"a":"2"},safe=False)
+#

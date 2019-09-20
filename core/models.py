@@ -72,6 +72,7 @@ class Partner(models.Model):
 
     # class Meta:
     #     abstract = True
+
 class Branch(models.Model):
     branch = models.CharField(max_length=50)
     def __str__(self):
@@ -145,6 +146,12 @@ class JournalItem(models.Model):
     credit_amount = models.DecimalField(max_digits=15,decimal_places=2,null=True, blank=True)
 
 
+class InvoiceLineOld(models.Model):
+    item = models.CharField(max_length=60,null=False)
+    quantity = models.IntegerField(null=False)
+    price = models.DecimalField(max_digits=15,decimal_places=2)
+    sub_total = models.DecimalField(max_digits=15,decimal_places=2)
+
 class InvoiceLine(models.Model):
     item = models.CharField(max_length=60,null=False)
     quantity = models.IntegerField(null=False)
@@ -157,6 +164,20 @@ class SalesInvoice(models.Model):
     doc_no = models.IntegerField(null=True,blank=True)
     customer = models.CharField(max_length=50,null=False,blank=True)
     branch = models.CharField(max_length=50,null=False)
+    status = models.BooleanField(default=False, null=True,blank=True)
+    narration = models.CharField(max_length=500, null=True,blank=True)
+    date = models.DateField()
+    total_amount = models.DecimalField(max_digits=15,decimal_places=2)
+    discount = models.DecimalField(max_digits=15,decimal_places=2, null=True,blank=True)
+    grant_total = models.DecimalField(max_digits=15,decimal_places=2)
+    journal_entry = models.ForeignKey(JournalEntry, on_delete=models.CASCADE, null=True, blank=True)
+    child = models.ManyToManyField(InvoiceLineOld)
+
+class SalesInvoiceNu(models.Model):
+    invoice_no = models.IntegerField()
+    doc_no = models.IntegerField(null=True,blank=True)
+    customer = models.ForeignKey(Partner,on_delete=models.CASCADE, null=True, blank=True)
+    branch = models.ForeignKey(Branch,on_delete=models.CASCADE, null=True, blank=True)
     status = models.BooleanField(default=False, null=True,blank=True)
     narration = models.CharField(max_length=500, null=True,blank=True)
     date = models.DateField()
@@ -193,3 +214,18 @@ class YearCharts(models.Model):
 class ExpenseYearChart(models.Model):
     year = models.CharField(max_length=6)
     grant_total = models.DecimalField(max_digits=15,decimal_places=2)
+#
+class CreditNote(models.Model):
+    Doc_no = models.CharField(max_length=30, null=False,blank=False)
+    Partner = models.ForeignKey(Partner,on_delete=models.CASCADE, null=True, blank=True)
+    Grand_total = models.DecimalField(max_digits=15,decimal_places=2)
+    Date = models.DateField()
+    Comment = models.CharField(max_length=500, null=True,blank=True)
+    journal_entry = models.ForeignKey(JournalEntry, on_delete=models.CASCADE, null=True, blank=True)
+
+    
+class CreditNoteNumber(models.Model):
+    prefix = models.CharField(max_length=6)
+    suffix = models.CharField(max_length=6)
+    start_number = models.IntegerField()
+    digits = models.IntegerField()

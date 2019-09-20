@@ -4,17 +4,27 @@ from core.models import (
         Product,ProductCategory,
         JournalEntry,Account,JournalItem,
         # ChildInvoice,Parent,
+        InvoiceLineOld,
         InvoiceLine,
         SalesInvoice,
+        SalesInvoiceNu,
         AccountDefault,CustomerReceipt,
         ExpenseCategory,Expenses,
         YearCharts,
         ExpenseYearChart,
+        CreditNote,
+        CreditNoteNumber
         )
 from rest_framework.validators import UniqueTogetherValidator
 from drf_writable_nested import WritableNestedModelSerializer
 
 
+
+
+class CreditNoteNumberSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CreditNoteNumber
+        fields = "__all__"
 
 class PartnerSerializer(serializers.ModelSerializer):
     class Meta:
@@ -55,6 +65,11 @@ class ItemsSerializer(serializers.ModelSerializer):
 #         ]
 #         read_only_fields = ('key',)
 #         # depth = 1
+
+class InvoiceLineOldSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = InvoiceLineOld
+        fields = "__all__"
 
 class InvoiceLineSerializer(serializers.ModelSerializer):
     class Meta:
@@ -160,6 +175,9 @@ class JournalEntrySerializer(serializers.ModelSerializer):
         fields = ('id','date','transaction_type','description','journal_item')
 
     def create(self, validated_data):
+        print(self,"self")
+        print(validated_data,"validated_data")
+
         albums_data = validated_data.pop('journal_item')
         musician = JournalEntry.objects.create(**validated_data)
         for album_data in albums_data:
@@ -222,6 +240,12 @@ class CustomerReceiptSerializer(WritableNestedModelSerializer):
         # fields = ('reciept_no', 'journal_entry')
         fields = "__all__"
 
+class CreditNoteSerializer(WritableNestedModelSerializer):
+    journal_entry = JournalEntrySerializer()
+
+    class Meta:
+        model = CreditNote
+        fields = "__all__"
 
 class ExpenseCategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -237,11 +261,23 @@ class ExpenseSerializer(WritableNestedModelSerializer):
 
 class ParantInvoiceSerializerTest(WritableNestedModelSerializer):
     journal_entry = JournalEntrySerializer()
-    child = InvoiceLineSerializer(many=True)
+    child = InvoiceLineOldSerializer(many=True)
 
     class Meta:
         model = SalesInvoice
         fields = "__all__"
+
+class ParantInvoiceSerializer(WritableNestedModelSerializer):
+    journal_entry = JournalEntrySerializer()
+    child = InvoiceLineSerializer(many=True)
+
+    class Meta:
+        model = SalesInvoiceNu
+        fields = "__all__"
+
+
+
+
 #  charts
 class SalesPartnerChartSerializer(serializers.ModelSerializer):
     class Meta:

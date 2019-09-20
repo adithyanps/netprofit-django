@@ -8,8 +8,13 @@ from .views import (
             JournalEntryViewset,
             AccountDefaultViewSet,CustomerReceiptViewSet,
             ExpenseCategoryViewSet,ExpenseViewSet,
-            SalesInvoiceViewSet,
+            SalesInvoiceViewSet,SalesInvoiceViewSetNu,
             InvoiceLineViewSet,
+            InvoiceLineOldViewSet,
+
+            CreditNoteViewSet,
+            CreditNoteNumberViewSet,
+
             SalesPartnerChartViewset,SalesYearIncomeChartViewset,
             Sales_PartnerWithYear_ChartViewSet,
             ExpenseYearIncomeChartViewset,Expense_Cat_Vers_Year_AmountChartViewset,
@@ -23,7 +28,10 @@ router.register('area', AreaViewSet)
 router.register('product-category', ProductCategoryViewSet)
 router.register('item', ItemViewset)
 router.register('parantdata', SalesInvoiceViewSet)
+router.register('parantdataNu', SalesInvoiceViewSetNu,base_name='parantdataNu')
+router.register('invoiceLineOld', InvoiceLineOldViewSet)
 router.register('invoiceLine', InvoiceLineViewSet)
+
 router.register('account', AccountViewset)
 router.register('journalitem', JournalItemViewset)
 router.register('journalentry', JournalEntryViewset)
@@ -31,6 +39,11 @@ router.register('customerReceipt', CustomerReceiptViewSet)
 router.register('accountDefault', AccountDefaultViewSet)
 router.register('expense-category', ExpenseCategoryViewSet)
 router.register('expenses', ExpenseViewSet)
+router.register('creditnote', CreditNoteViewSet)
+router.register('creditnote-number', CreditNoteNumberViewSet,base_name='creditnote-number')
+
+
+
 router.register('sales-partner-chart', SalesPartnerChartViewset,base_name='CustomersYearChart')
 router.register('sales-year-chart', SalesYearIncomeChartViewset,base_name='SalesYearChart')
 router.register('sales-PartnerWithYear-chart', Sales_PartnerWithYear_ChartViewSet,base_name='Sales_PartnerWithYearChart')
