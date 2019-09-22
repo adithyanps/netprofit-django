@@ -48,6 +48,10 @@ INSTALLED_APPS = [
     'core',
     'user',
     'invoice',
+
+    'Customer_Receipts',
+    'Journal_Entry',
+    'Masters',
 ]
 
 MIDDLEWARE = [

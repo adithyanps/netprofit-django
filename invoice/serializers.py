@@ -18,8 +18,10 @@ from core.models import (
 from rest_framework.validators import UniqueTogetherValidator
 from drf_writable_nested import WritableNestedModelSerializer
 
+from invoice import test
+# from invoice import serializers
 
-
+from collections import OrderedDict
 
 class CreditNoteNumberSerializer(serializers.ModelSerializer):
     class Meta:
@@ -175,12 +177,13 @@ class JournalEntrySerializer(serializers.ModelSerializer):
         fields = ('id','date','transaction_type','description','journal_item')
 
     def create(self, validated_data):
-        print(self,"self")
+        # print(self,"self")
         print(validated_data,"validated_data")
 
         albums_data = validated_data.pop('journal_item')
         musician = JournalEntry.objects.create(**validated_data)
         for album_data in albums_data:
+            print(album_data,'album_data')
             JournalItem.objects.create(journal_entry=musician, **album_data)
         return musician
 
@@ -243,10 +246,54 @@ class CustomerReceiptSerializer(WritableNestedModelSerializer):
 class CreditNoteSerializer(WritableNestedModelSerializer):
     journal_entry = JournalEntrySerializer()
 
+
     class Meta:
         model = CreditNote
         fields = "__all__"
+        # fields = ('id','Doc_no','Grand_total','Date','Comment','Partner','journal_entry')
 
+    def create(self, validated_data):
+        print(validated_data,"validated_data")
+        var = test.test()
+
+        validated_data['Doc_no'] = var
+        print(var,"test")
+        # journal_entry = validated_data.pop('journal_entry')
+        # print(journal_entry,"journal_entry")
+        # print(validated_data,"validated_data")
+        #
+        # orderedDict = OrderedDict(journal_entry)
+        # entry_data = list(dict(orderedDict))
+        # print(dict(orderedDict),'dictttttttttt')
+        # # JournalEntrySerializer(data=dict(orderedDict))
+        # jd_data = dict(orderedDict).pop('journal_item')
+        # key = CreditNote.objects.create(**validated_data)
+        # musician = JournalEntry.objects.create(**dict(orderedDict))
+        #
+        # for i_data in jd_data:
+        #     print(i_data,'i_data')
+        #     JournalItem.objects.create(journal_entry=musician, **album_data)
+
+        # for item in orderedDict:
+        #     print(item,'item')
+        #     JournalEntry.objects.create(journal_entry=key,**item)
+        return validated_data
+
+        # creditnote = CreditNote.objects.create(**validated_data)
+        # return creditnote
+
+        # albums_data = validated_data.pop('journal_entry')
+        # data = CreditNote.objects.create(**validated_data)
+        # # for album_data in albums_data:
+        # # journal_entry = validated_data['journal_entry']
+        # print(albums_data,'journal_entry')
+
+
+
+        # key = Parent.objects.create( **validated_data)
+        # return key
+    # def update(self, instance, validated_data):
+    #     return validated_data
 class ExpenseCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = ExpenseCategory
