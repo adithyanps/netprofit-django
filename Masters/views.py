@@ -74,10 +74,10 @@ class ProductCategoryViewSet(viewsets.ModelViewSet):
         return self.queryset.order_by('id')
 
 
-class ItemViewset(viewsets.ModelViewSet):
+class ProductViewset(viewsets.ModelViewSet):
     """create a new item and see all items"""
     queryset = models.Product.objects.all()
-    serializer_class = serializers.ItemsSerializer
+    serializer_class = serializers.ProductSerializer
 
     filter_backends = (SearchFilter,)
     search_fields = ("item",)

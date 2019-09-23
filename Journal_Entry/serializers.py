@@ -27,12 +27,12 @@ class JournalEntrySerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         # print(self,"self")
-        print(validated_data,"validated_data")
+        # print(validated_data,"validated_data")
 
         albums_data = validated_data.pop('journal_item')
         musician = JournalEntry.objects.create(**validated_data)
         for album_data in albums_data:
-            print(album_data,'album_data')
+            # print(album_data,'album_data')
             JournalItem.objects.create(journal_entry=musician, **album_data)
         return musician
 

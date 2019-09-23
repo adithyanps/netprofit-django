@@ -4,7 +4,7 @@ from .views import (
             PartnerViewSet,
             BranchViewset,
             AreaViewSet,
-            ItemViewset,
+            ProductViewset,
             ProductCategoryViewSet,
             AccountViewset,
             AccountDefaultViewSet,
@@ -15,7 +15,7 @@ router.register('partner', PartnerViewSet)
 router.register('branch', BranchViewset)
 router.register('area', AreaViewSet)
 router.register('product-category', ProductCategoryViewSet)
-router.register('item', ItemViewset)
+router.register('product', ProductViewset)
 router.register('account', AccountViewset)
 router.register('accountDefault', AccountDefaultViewSet)
 

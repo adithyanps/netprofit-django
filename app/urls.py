@@ -17,7 +17,9 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls import url
-
+from rest_framework.routers import DefaultRouter
+router = DefaultRouter()
+from Sales.urls import router
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/user/', include('user.urls')),
@@ -25,6 +27,9 @@ urlpatterns = [
     path('api/masters/', include('Masters.urls')),
     path('api/journal_entry/', include('Journal_Entry.urls')),
     path('api/customer_reciepts/', include('Customer_Receipts.urls')),
+    path('api/credit_note/', include('Credit_Note.urls')),
+    path('api/expenses/', include('Expenses.urls')),
+    path('api/sales/', include('Sales.urls')),
 
 ]
 

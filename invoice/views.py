@@ -271,22 +271,22 @@ class CreditNoteViewSet(viewsets.ModelViewSet):
 
         return self.queryset.order_by('id')
 
-    # def create(self,request, *args, **kwargs):
-    #
-    #
-    #
-    #     request.data['Doc_no']=105
-    #     serializer = self.get_serializer(data=request.data)
-    #
-    #     serializer.is_valid(raise_exception=True)
-    #
-    #     self.perform_create(serializer)
-    #
-    #     headers = self.get_success_headers(serializer.data)
-    #     # b = self.number()
-    #     # print(b)
-    #     return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-    #
+    def create(self,request, *args, **kwargs):
+
+
+
+        request.data['Doc_no']=105
+        serializer = self.get_serializer(data=request.data)
+
+        serializer.is_valid(raise_exception=True)
+
+        self.perform_create(serializer)
+
+        headers = self.get_success_headers(serializer.data)
+        # b = self.number()
+        # print(b)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
 
 
 

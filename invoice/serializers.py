@@ -252,12 +252,12 @@ class CreditNoteSerializer(WritableNestedModelSerializer):
         fields = "__all__"
         # fields = ('id','Doc_no','Grand_total','Date','Comment','Partner','journal_entry')
 
-    def create(self, validated_data):
-        print(validated_data,"validated_data")
-        var = test.test()
-
-        validated_data['Doc_no'] = var
-        print(var,"test")
+    # def create(self, validated_data):
+    #    # print(validated_data,"validated_data")
+    #    # var = test.test()
+    #    #
+    #    # validated_data['Doc_no'] = var
+    #    # print(var,"test")
         # journal_entry = validated_data.pop('journal_entry')
         # print(journal_entry,"journal_entry")
         # print(validated_data,"validated_data")
@@ -277,7 +277,7 @@ class CreditNoteSerializer(WritableNestedModelSerializer):
         # for item in orderedDict:
         #     print(item,'item')
         #     JournalEntry.objects.create(journal_entry=key,**item)
-        return validated_data
+        # #return validated_data
 
         # creditnote = CreditNote.objects.create(**validated_data)
         # return creditnote

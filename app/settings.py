@@ -49,9 +49,20 @@ INSTALLED_APPS = [
     'user',
     'invoice',
 
+    'Sales',
     'Customer_Receipts',
     'Journal_Entry',
     'Masters',
+    'Credit_Note',
+    'Debit_Note',
+    'Expenses',
+
+    'Purchase',
+    'Price_List',
+    'Check_Tracker',
+    'Supplier_Payments',
+    'Utility'
+
 ]
 
 MIDDLEWARE = [
