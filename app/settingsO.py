@@ -25,7 +25,7 @@ SECRET_KEY = 'ublrn*afoy&lv^cbd)k8=&@8)+8r^yhk(_)u1jdg)g%=yv4)f!'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['35.222.87.140','34.74.76.230','tensorq.com','www.tensorq.com']
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -101,25 +101,19 @@ WSGI_APPLICATION = 'app.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'netprofit',
-#         'USER':'postgres',
-#         'PASSWORD':'test123',
-#         'HOST':'127.0.0.1',
-#         'PORT':'5432'
-#
-#     }
-# }
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'netprofit',
+        'USER':'postgres',
+        'PASSWORD':'test123',
+        'HOST':'127.0.0.1',
+        'PORT':'5432'
 
     }
 }
+
+
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
 
@@ -157,9 +151,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT  = os.path.join(BASE_DIR, 'static/')
 
-# INTERNAL_IPS = ['127.0.0.1']
+INTERNAL_IPS = ['127.0.0.1']
 AUTH_USER_MODEL = 'core.User'
 
 REST_FRAMEWORK = {
@@ -172,6 +165,6 @@ REST_FRAMEWORK = {
     ),
 }
 CORS_ORIGIN_ALLOW_ALL = True
-# CORS_ORIGIN_WHITELIST = (
-#     'http://localhost:3000/',
-# )
+CORS_ORIGIN_WHITELIST = (
+    'http://localhost:3000/',
+)
