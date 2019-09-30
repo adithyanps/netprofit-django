@@ -9,5 +9,5 @@ import json
 
 # Create your models here.
 class CustomerReceipt(models.Model):
-    reciept_no = models.IntegerField()
+    reciept_no = models.CharField(max_length=60,null=False)
     journal_entry = models.ForeignKey('Journal_Entry.JournalEntry', on_delete=models.CASCADE, null=True, blank=True)

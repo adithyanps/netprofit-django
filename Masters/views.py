@@ -108,3 +108,9 @@ class AccountDefaultViewSet(viewsets.ModelViewSet):
     #     if (self.request.user.user_choice == "FULL_ACCESS"):
     #         return self.queryset
     #     return None
+class SerialNumberViewSet(viewsets.ModelViewSet):
+    serializer_class = serializers.SerialNumberSerializer
+    queryset = models.SerialNumber.objects.all()
+    
+    def get_queryset(self):
+        return self.queryset.order_by('id')

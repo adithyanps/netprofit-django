@@ -7,6 +7,21 @@ def test():
 # print(test(5))
 
 def autoCreditNoteNumberGenerator():
-    queryset = models.CreditNote.objects.all().order_by('-id')[0]
-    print(queryset,'xxx')
-    print(queryset.Doc_no,'Docno')
+    num = 1
+    return num
+
+def autoDebitNoteNumberGenerator():
+    num = 1
+    return num
+
+def autoSalesInvoiceNumberGenerator():
+    num = 1
+    return num
+
+def autoRecieptNumberGenerator():
+    num = 1
+    return num
+
+def autoExpenseNumberGenerator():
+    num = 1
+    return num

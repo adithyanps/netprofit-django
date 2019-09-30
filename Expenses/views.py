@@ -31,6 +31,8 @@ import django_filters
 from django_filters import rest_framework as filters
 import calendar
 
+from Utility import Utility
+
 
 class ExpenseCategoryViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.ExpenseCategorySerializer
@@ -72,3 +74,19 @@ class ExpenseViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return self.queryset.order_by('id')
+
+    def create(self,request, *args, **kwargs):
+        print(request.data,"ddata")
+        doc = request.data['Doc_no']
+        print(doc)
+        if doc==None:
+            request.data['Doc_no']=Utility.autoExpenseNumberGenerator()
+
+        serializer = self.get_serializer(data=request.data)
+
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        # b = self.number()
+        # print(b)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)

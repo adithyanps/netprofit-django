@@ -27,7 +27,7 @@ from django_filters import FilterSet
 import django_filters
 from django_filters import rest_framework as filters
 import calendar
-from Utils import utils
+
 from Utility import Utility
 
 
@@ -40,8 +40,12 @@ class CreditNoteViewSet(viewsets.ModelViewSet):
         return self.queryset.order_by('id')
 
     def create(self,request, *args, **kwargs):
-        request.data['Doc_no']=Utility.test()
-        Utility.autoCreditNoteNumberGenerator()
+        print(request.data,"ddata")
+        doc = request.data['Doc_no']
+        print(doc)
+        if doc==None:
+            request.data['Doc_no']=Utility.autoCreditNoteNumberGenerator()
+
         serializer = self.get_serializer(data=request.data)
 
         serializer.is_valid(raise_exception=True)
@@ -50,11 +54,3 @@ class CreditNoteViewSet(viewsets.ModelViewSet):
         # b = self.number()
         # print(b)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-
-
-
-
-
-class CreditNoteNumberViewSet(viewsets.ModelViewSet):
-    serializer_class = serializers.CreditNoteNumberSerializer
-    queryset = models.CreditNoteNumber.objects.all()

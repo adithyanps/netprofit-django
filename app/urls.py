@@ -28,6 +28,7 @@ urlpatterns = [
     path('api/journal_entry/', include('Journal_Entry.urls')),
     path('api/customer_reciepts/', include('Customer_Receipts.urls')),
     path('api/credit_note/', include('Credit_Note.urls')),
+    path('api/debit_note/', include('Debit_Note.urls')),
     path('api/expenses/', include('Expenses.urls')),
     path('api/sales/', include('Sales.urls')),
 

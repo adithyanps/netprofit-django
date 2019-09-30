@@ -16,7 +16,7 @@ class InvoiceLine(models.Model):
     sub_total = models.DecimalField(max_digits=15,decimal_places=2)
 
 class SalesInvoice(models.Model):
-    invoice_no = models.IntegerField()
+    invoice_no = models.CharField(max_length=60,null=False)
     doc_no = models.IntegerField(null=True,blank=True)
     customer = models.ForeignKey('Masters.Partner',on_delete=models.CASCADE, null=True, blank=True)
     branch = models.ForeignKey('Masters.Branch',on_delete=models.CASCADE, null=True, blank=True)

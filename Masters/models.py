@@ -70,3 +70,19 @@ class Branch(models.Model):
     branch = models.CharField(max_length=50)
     def __str__(self):
         return self.branch
+
+
+class SerialNumber(models.Model):
+    CHOICES = (
+        ('CN', 'CreditNote'),
+        ('DN', 'DebitNote'),
+        ('SI', 'Sales'),
+        ('CR', 'customer_reciept'),
+        ('EP', 'expense'),
+        
+    )
+    prefix = models.CharField(max_length=6, null=False,blank=False)
+    suffix = models.CharField(max_length=6, null=False,blank=False)
+    start_number = models.IntegerField( null=False,blank=False)
+    padding = models.IntegerField( null=False,blank=False)
+    type = models.CharField(max_length=10,choices=CHOICES,null=False,blank=False)

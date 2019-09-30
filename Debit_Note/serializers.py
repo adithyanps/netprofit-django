@@ -1,6 +1,6 @@
 from rest_framework import serializers,fields
-from Credit_Note.models import (
-        CreditNote
+from Debit_Note.models import (
+        DebitNote
         )
 from rest_framework.validators import UniqueTogetherValidator
 from drf_writable_nested import WritableNestedModelSerializer
@@ -15,12 +15,10 @@ from collections import OrderedDict
 
 
 
-
-
-class CreditNoteSerializer(WritableNestedModelSerializer):
+class DebitNoteSerializer(WritableNestedModelSerializer):
     journal_entry = JournalEntrySerializer()
 
 
     class Meta:
-        model = CreditNote
+        model = DebitNote
         fields = "__all__"

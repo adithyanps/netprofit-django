@@ -5,22 +5,9 @@ from Masters.models import (
         Area,
         Product,
         ProductCategory,
-        # JournalEntry,
         Account,
         AccountDefault,
-        # JournalItem,
-        # ChildInvoice,Parent,
-        # InvoiceLineOld,
-        # InvoiceLine,
-        # SalesInvoice,
-        # SalesInvoiceNu,
-        # CustomerReceipt,
-        # ExpenseCategory,
-        # Expenses,
-        # YearCharts,
-        # ExpenseYearChart,
-        # CreditNote,
-        # CreditNoteNumber
+        SerialNumber
         )
 from rest_framework.validators import UniqueTogetherValidator
 from drf_writable_nested import WritableNestedModelSerializer
@@ -72,3 +59,9 @@ class AccountDefaultSerializer(serializers.ModelSerializer):
         response['SupplierAccount'] = AccountSerializer(instance.SupplierAccount).data
 
         return response
+
+class SerialNumberSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = SerialNumber
+        fields = "__all__"

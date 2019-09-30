@@ -28,6 +28,9 @@ import django_filters
 from django_filters import rest_framework as filters
 import calendar
 
+from Utility import Utility
+
+# Create your views here.
 
 # class CustomerReceiptFilter(FilterSet):
 #     start_date = filters.DateFilter(method="filter_by_start_date")
@@ -58,3 +61,17 @@ class CustomerReceiptViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         """return objects"""
         return self.queryset.order_by('id')
+
+    def create(self,request, *args, **kwargs):
+        print(request.data,"ddata")
+        doc = request.data['reciept_no']
+        print(doc)
+        if doc==None:
+            request.data['reciept_no']=Utility.autoRecieptNumberGenerator()
+
+        serializer = self.get_serializer(data=request.data)
+
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)

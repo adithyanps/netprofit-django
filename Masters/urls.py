@@ -8,6 +8,7 @@ from .views import (
             ProductCategoryViewSet,
             AccountViewset,
             AccountDefaultViewSet,
+            SerialNumberViewSet
             )
 
 router = DefaultRouter()
@@ -18,6 +19,8 @@ router.register('product-category', ProductCategoryViewSet)
 router.register('product', ProductViewset)
 router.register('account', AccountViewset)
 router.register('accountDefault', AccountDefaultViewSet)
+router.register('serial-number', SerialNumberViewSet)
+
 
 app_name = 'masters'
 urlpatterns = [

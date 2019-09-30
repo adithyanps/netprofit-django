@@ -14,10 +14,3 @@ class CreditNote(models.Model):
     Date = models.DateField()
     Comment = models.CharField(max_length=500, null=True,blank=True)
     journal_entry = models.ForeignKey('Journal_Entry.JournalEntry', on_delete=models.CASCADE, null=True, blank=True)
-
-
-class CreditNoteNumber(models.Model):
-    prefix = models.CharField(max_length=6)
-    suffix = models.CharField(max_length=6)
-    start_number = models.IntegerField()
-    digits = models.IntegerField()

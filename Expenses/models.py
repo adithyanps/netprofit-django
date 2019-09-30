@@ -12,7 +12,7 @@ class ExpenseCategory(models.Model):
 
 
 class Expenses(models.Model):
-    Doc_no = models.IntegerField()
+    Doc_no = models.CharField(max_length=60,null=False)
     ExpenseCategory = models.ForeignKey(ExpenseCategory, on_delete=models.CASCADE, null=False, blank=False)
     Date = models.DateField()
     ExpenseAcct = models.ForeignKey('Masters.Account', on_delete=models.CASCADE, null=False, blank=False)

@@ -27,6 +27,9 @@ from django_filters import FilterSet
 import django_filters
 from django_filters import rest_framework as filters
 import calendar
+
+from Utility import Utility
+
 # Create your views here.
 
 class SalesInvoiceFilter(FilterSet):
@@ -58,6 +61,18 @@ class SalesInvoiceViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return self.queryset.order_by('id')
+
+    def create(self,request, *args, **kwargs):
+        invoice_no = request.data['invoice_no']
+        if invoice_no == None:
+            request.data['invoice_no']=Utility.autoSalesInvoiceNumberGenerator()
+        serializer = self.get_serializer(data=request.data)
+
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
 
 
 class InvoiceLineViewSet(viewsets.ModelViewSet):

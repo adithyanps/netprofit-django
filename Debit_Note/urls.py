@@ -1,12 +1,13 @@
+
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import (CreditNoteViewSet    )
+from .views import (DebitNoteViewSet  )
 
 router = DefaultRouter()
 
-router.register('creditnote', CreditNoteViewSet)
+router.register('debitnote', DebitNoteViewSet)
 
-app_name = 'credit_note'
+app_name = 'debit_note'
 urlpatterns = [
     path('',include(router.urls)),
 ]
