@@ -23,7 +23,6 @@ from Sales.urls import router
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/user/', include('user.urls')),
-    path('api/invoice/', include('invoice.urls')),
     path('api/masters/', include('Masters.urls')),
     path('api/journal_entry/', include('Journal_Entry.urls')),
     path('api/customer_reciepts/', include('Customer_Receipts.urls')),

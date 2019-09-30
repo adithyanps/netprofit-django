@@ -25,7 +25,7 @@ SECRET_KEY = 'ublrn*afoy&lv^cbd)k8=&@8)+8r^yhk(_)u1jdg)g%=yv4)f!'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['35.222.87.140','34.74.76.230','tensorq.com','www.tensorq.com']
+ALLOWED_HOSTS = ['localhost','35.222.87.140','34.74.76.230','tensorq.com','www.tensorq.com']
 
 
 # Application definition
@@ -47,7 +47,6 @@ INSTALLED_APPS = [
 
     'core',
     'user',
-    'invoice',
 
     'Sales',
     'Customer_Receipts',
